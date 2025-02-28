@@ -172,8 +172,9 @@ body {
   width: 120px;
   height: 120px;
   cursor: pointer;
+  mix-blend-mode: difference;
+  background-color: transparent;
 }
-
 .wheel-text {
   position: absolute;
   width: 110%;
@@ -181,14 +182,22 @@ body {
   animation: spin 8s linear infinite;
 }
 
+.wheel-text text {
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  fill: white;
+  
+}
+
 .wheel-arrow {
   position: absolute;
   top: 50%;
   left: 55%;
   transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  z-index: 2;
+  font-size: 24px;
+  color: white;
+  mix-blend-mode: difference;
 }
 
 @keyframes spin {
@@ -469,8 +478,20 @@ body {
 }
 
 .top-wheel {
-  animation: spin 15s linear infinite;
+  animation: spin 8s linear infinite;
 }
+.top-wheel text{
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  fill: white;
+}
+.bottom-wheel-arrow{
+  position:absolute;
+  top:32%;
+  right:12.6%;
+}
+
 
 @keyframes spin {
   from {

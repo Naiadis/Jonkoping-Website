@@ -1,12 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Header animation
-  const header = document.querySelector(".header");
 
   // Scroll wheel animation
   const scrollWheel = document.querySelector(".scroll-wheel");
-  const wheelTextContainer = document.querySelector(".wheel-text-container");
-  const wheelText = document.querySelector(".wheel-text text");
-  const heroImage = document.querySelector(".hero-image");
 
   // Scroll to shops section when scroll wheel is clicked
   scrollWheel.addEventListener("click", function () {
@@ -33,20 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
     requestAnimationFrame(rotateWheelText);
   }
   rotateWheelText();
-
-  // Update scroll wheel color change logic
-  function updateScrollWheelColor() {
-    const scrollWheel = document.querySelector(".scroll-wheel");
-    const wheelRect = scrollWheel.getBoundingClientRect();
-    const imageBottom = heroImage.getBoundingClientRect().bottom;
-
-    // Check if the wheel is overlapping the white space
-    if (wheelRect.top > imageBottom - wheelRect.height / 2) {
-      scrollWheel.classList.add("dark");
-    } else {
-      scrollWheel.classList.remove("dark");
-    }
-  }
 
   // Shop categories
   const categoryLinks = document.querySelectorAll(".category-nav a");
@@ -153,41 +134,12 @@ document.addEventListener("DOMContentLoaded", function () {
   animateSections();
   updateScrollWheelColor();
 
-  // Update text color continuously
-  function updateWheelTextColor() {
-    const textPosition = wheelTextContainer.getBoundingClientRect();
-    const imageBottom = heroImage.getBoundingClientRect().bottom;
-    const centerY = textPosition.top + textPosition.height / 2;
-
-    // Calculate which portion of the text should be white or black
-    const angle = (Date.now() / 50) % 360;
-    const topHalf = angle > 180;
-
-    if (centerY > imageBottom) {
-      wheelText.style.fill = "#333333";
-    } else {
-      wheelText.style.fill = "#ffffff";
-    }
-  }
-
   function animate() {
-    updateWheelTextColor();
+    // updateWheelTextColor();
     requestAnimationFrame(animate);
   }
   animate();
 
-  function updateTextColor() {
-    const wheelRect = scrollWheel.getBoundingClientRect();
-    const wheelCenter = wheelRect.top + wheelRect.height / 2;
-    const imageBottom = heroImage.getBoundingClientRect().bottom;
-
-    // Change color based on position relative to the hero image
-    if (wheelCenter < imageBottom) {
-      wheelText.style.fill = "white";
-    } else {
-      wheelText.style.fill = "#333333";
-    }
-  }
 
   // Update on scroll with throttling
   let ticking = false;
