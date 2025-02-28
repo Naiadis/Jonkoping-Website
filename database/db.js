@@ -3,11 +3,11 @@
 const { Client } = require("pg");
 
 const client = new Client({
-	host: process.env.POSTGRES_HOST || "db",
+	user: "postgres",
+	host: "host.docker.internal", // Use 'host.docker.internal' if running in Docker
+	database: "jkpgcity",
+	password: "12345",
 	port: 5432,
-	user: process.env.POSTGRES_USER || "user",
-	password: process.env.POSTGRES_PASSWORD || "password",
-	database: process.env.POSTGRES_DB || "jkpgcity",
 });
 
 let isConnected = false;
