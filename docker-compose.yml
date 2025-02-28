@@ -3,6 +3,8 @@ services:
     build: ./frontend
     ports:
       - "80:80"
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html
     depends_on:
       - backend
     networks:
