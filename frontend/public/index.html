@@ -32,29 +32,68 @@
 						</li>
 					</ul>
 				</nav>
+				<div class="login-dropdown">
+					<button class="login-btn">Login</button>
+					<div class="dropdown-content">
+						<form id="loginForm">
+							<input type="text" id="username" placeholder="Username" required>
+							<input type="password" id="password" placeholder="Password" required>
+							<button type="submit">Login</button>
+						</form>
+					</div>
+				</div>
 			</div>
 			<div class="header-blur"></div>
 		</header>
 
-    <section class="hero">
-      <div class="hero-image"></div>
-      <div class="scroll-wheel">
-        <svg class="wheel-text" viewBox="0 0 100 100">
-          <defs>
-            <path
-              id="circle"
-              d="M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0"
-            />
-          </defs>
-          <text>
-            <textPath href="#circle" startOffset="0%">
-                • Scroll  down • Scroll  down 
-            </textPath>
-          </text>
-        </svg>
-        <div class="wheel-arrow">⬇︎</div>
-      </div>
-    </section>
+		<div id="adminControls" style="display: none;">
+			<h3>Admin Controls</h3>
+			
+			<form id="addStoreForm">
+				<h4>Add New Store</h4>
+				<input type="text" id="storeName" placeholder="Store Name" required>
+				<input type="text" id="storeUrl" placeholder="Store URL">
+				<input type="text" id="storeDistrict" placeholder="District">
+				<input type="text" id="storeCategory" placeholder="Category">
+				<button type="submit">Add Store</button>
+			</form>
+
+			<form id="updateStoreForm">
+				<h4>Update Store</h4>
+				<input type="text" id="updateStoreId" placeholder="Store ID" required>
+				<input type="text" id="updateStoreName" placeholder="Store Name">
+				<input type="text" id="updateStoreUrl" placeholder="Store URL">
+				<input type="text" id="updateStoreDistrict" placeholder="District">
+				<input type="text" id="updateStoreCategory" placeholder="Category">
+				<button type="submit">Update Store</button>
+			</form>
+
+			<form id="deleteStoreForm">
+				<h4>Delete Store</h4>
+				<input type="text" id="deleteStoreId" placeholder="Store ID" required>
+				<button type="submit">Delete Store</button>
+			</form>
+		</div>
+
+		<section class="hero">
+			<div class="hero-image"></div>
+			<div class="scroll-wheel">
+				<svg class="wheel-text" viewBox="0 0 100 100">
+					<defs>
+						<path
+							id="circle"
+							d="M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0"
+						/>
+					</defs>
+					<text>
+						<textPath href="#circle" startOffset="0%">
+							• Scroll  down • Scroll  down 
+						</textPath>
+					</text>
+				</svg>
+				<div class="wheel-arrow">⬇︎</div>
+			</div>
+		</section>
 
 		<section class="shops-section">
 			<h2>SHOPS</h2>
@@ -157,50 +196,50 @@
 			</div>
 		</section>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="social-media">
-          <h3>Social Media</h3>
-          <ul>
-            <li><a href="#">Facebook</a></li>
-            <li><a href="#">Instagram</a></li>
-            <li><a href="#">LinkedIn</a></li>
-            <li><a href="#">TikTok</a></li>
-          </ul>
-        </div>
-        <div class="contact-info">
-          <p>+46 36-16 40 74</p>
-          <p><a href="mailto:info@jkpgcity.se">info@jkpgcity.se</a></p>
-          <p>Jönköping City AB</p>
-          <p>c/o Jönköpings kommun</p>
-          <p>Rådhusparken 1</p>
-          <p>551 89 Jönköping</p>
-        </div>
-        
-<div class="back-to-top">
-	<div class="top-wheel">
-	  <svg viewBox="0 0 100 100" width="120" height="120">
-		<defs>
-		  <path
-			id="top-circle"
-			d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-		  />
-		</defs>
-		<text>
-		  <textPath xlink:href="#top-circle">
-			Back to top • Back to top •
-		  </textPath>
-		</text>
-	  </svg>
-	</div>
-	<div class="center-arrow">⬆︎</div>
-  </div> 
-        </div>
-      </div>
-      <div class="footer-line"></div>
-    </footer>
+		<footer class="footer">
+			<div class="footer-content">
+				<div class="social-media">
+					<h3>Social Media</h3>
+					<ul>
+						<li><a href="#">Facebook</a></li>
+						<li><a href="#">Instagram</a></li>
+						<li><a href="#">LinkedIn</a></li>
+						<li><a href="#">TikTok</a></li>
+					</ul>
+				</div>
+				<div class="contact-info">
+					<p>+46 36-16 40 74</p>
+					<p><a href="mailto:info@jkpgcity.se">info@jkpgcity.se</a></p>
+					<p>Jönköping City AB</p>
+					<p>c/o Jönköpings kommun</p>
+					<p>Rådhusparken 1</p>
+					<p>551 89 Jönköping</p>
+				</div>
+				
+				<div class="back-to-top">
+					<div class="top-wheel">
+						<svg viewBox="0 0 100 100" width="120" height="120">
+							<defs>
+								<path
+									id="top-circle"
+									d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+								/>
+							</defs>
+							<text>
+								<textPath xlink:href="#top-circle">
+									Back to top • Back to top •
+								</textPath>
+							</text>
+						</svg>
+					</div>
+					<div class="center-arrow">⬆︎</div>
+				</div> 
+			</div>
+		</div>
+		<div class="footer-line"></div>
+	</footer>
 
-		<script src="main.js"></script>
-		<script src="script.js"></script>
+	<script src="main.js"></script>
+	<script src="script.js"></script>
 	</body>
 </html>

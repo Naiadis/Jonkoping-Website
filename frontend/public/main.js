@@ -162,3 +162,161 @@ document.addEventListener("DOMContentLoaded", async () => {
 		console.error("Error initializing carousel:", error);
 	}
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+	const loginForm = document.getElementById("loginForm");
+	const adminControls = document.getElementById("adminControls");
+
+	// Handle login
+	loginForm.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		const username = document.getElementById("username").value;
+		const password = document.getElementById("password").value;
+
+		try {
+			const response = await fetch("/api/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ username, password }),
+				credentials: "include",
+			});
+
+			if (response.ok) {
+				adminControls.style.display = "block";
+				alert("Login successful!");
+			} else {
+				alert("Login failed");
+			}
+		} catch (error) {
+			console.error("Login error:", error);
+			alert("Login error");
+		}
+	});
+
+	// Handle add store
+	document
+		.getElementById("addStoreForm")
+		.addEventListener("submit", async (e) => {
+			e.preventDefault();
+			const store = {
+				name: document.getElementById("storeName").value,
+				url: document.getElementById("storeUrl").value,
+				district: document.getElementById("storeDistrict").value,
+				category: document.getElementById("storeCategory").value,
+			};
+
+			try {
+				const response = await fetch("/api/admin/stores", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${getCookie("auth_token")}`,
+					},
+					body: JSON.stringify(store),
+				});
+
+				if (response.ok) {
+					alert("Store added successfully");
+					location.reload(); // Refresh to show new store
+				} else {
+					alert("Failed to add store");
+				}
+			} catch (error) {
+				console.error("Add store error:", error);
+				alert("Error adding store");
+			}
+		});
+
+	// Handle update store
+	document
+		.getElementById("updateStoreForm")
+		.addEventListener("submit", async (e) => {
+			e.preventDefault();
+			const storeId = document.getElementById("updateStoreId").value;
+			const store = {
+				name: document.getElementById("updateStoreName").value,
+				url: document.getElementById("updateStoreUrl").value,
+				district: document.getElementById("updateStoreDistrict").value,
+				category: document.getElementById("updateStoreCategory").value,
+			};
+
+			try {
+				const response = await fetch(`/api/admin/stores/${storeId}`, {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${getCookie("auth_token")}`,
+					},
+					body: JSON.stringify(store),
+				});
+
+				if (response.ok) {
+					alert("Store updated successfully");
+					location.reload();
+				} else {
+					alert("Failed to update store");
+				}
+			} catch (error) {
+				console.error("Update store error:", error);
+				alert("Error updating store");
+			}
+		});
+
+	// Handle delete store
+	document
+		.getElementById("deleteStoreForm")
+		.addEventListener("submit", async (e) => {
+			e.preventDefault();
+			const storeId = document.getElementById("deleteStoreId").value;
+
+			try {
+				const response = await fetch(`/api/admin/stores/${storeId}`, {
+					method: "DELETE",
+					headers: {
+						Authorization: `Bearer ${getCookie("auth_token")}`,
+					},
+				});
+
+				if (response.ok) {
+					alert("Store deleted successfully");
+					location.reload();
+				} else {
+					alert("Failed to delete store");
+				}
+			} catch (error) {
+				console.error("Delete store error:", error);
+				alert("Error deleting store");
+			}
+		});
+});
+
+// Helper function to get cookies
+function getCookie(name) {
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
+async function createAdminUser() {
+	try {
+		const adminExists = await model.query(
+			"SELECT * FROM users WHERE username = $1",
+			["admin"]
+		);
+
+		if (adminExists.rows.length === 0) {
+			const passwordHash = await hashPassword("admin123");
+			await model.query(
+				"INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3)",
+				["admin", passwordHash, "admin"]
+			);
+			console.log("Admin user created");
+		} else {
+			console.log("Admin user already exists");
+		}
+	} catch (err) {
+		console.error("Error creating admin user:", err);
+	}
+}

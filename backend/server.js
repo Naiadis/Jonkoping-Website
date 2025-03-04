@@ -4,10 +4,26 @@ const { Pool } = require("pg");
 const path = require("path");
 const STORES_PATH = path.join(__dirname, "data", "stores.json");
 const model = require("./model");
+const cookieParser = require("cookie-parser");
+const {
+	SECRET_KEY,
+	generateToken,
+	verifyToken,
+	hashPassword,
+	comparePassword,
+} = require("./authUtils");
+const fs = require("fs");
+const bcrypt = require("bcryptjs");
 
 const app = express();
-app.use(cors());
+app.use(
+	cors({
+		origin: "http://localhost",
+		credentials: true,
+	})
+);
 app.use(express.json());
+app.use(cookieParser());
 
 const pool = new Pool({
 	user: process.env.POSTGRES_USER,
@@ -82,11 +98,188 @@ app.post("/api/stores", async (req, res) => {
 	}
 });
 
+// Replace the mock users array with database queries
+async function findUserByUsername(username) {
+	const result = await model.query("SELECT * FROM users WHERE username = $1", [
+		username,
+	]);
+	return result.rows[0];
+}
+
+async function createUser(username, password, role = "user") {
+	const passwordHash = await hashPassword(password);
+	const result = await model.query(
+		"INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3) RETURNING *",
+		[username, passwordHash, role]
+	);
+	return result.rows[0];
+}
+
+// Login route
+app.post("/api/login", async (req, res) => {
+	try {
+		const { username, password } = req.body;
+
+		// Query the database for the user
+		const result = await model.query(
+			"SELECT * FROM users WHERE username = $1",
+			[username]
+		);
+
+		const user = result.rows[0];
+
+		if (!user || !(await comparePassword(password, user.password_hash))) {
+			return res.status(401).json({ error: "Invalid credentials" });
+		}
+
+		const token = generateToken(user);
+
+		res.cookie("auth_token", token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+		});
+
+		res.json({ message: "Login successful" });
+	} catch (error) {
+		console.error("Login error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// Middleware to verify JWT
+const authenticate = (req, res, next) => {
+	const token = req.cookies.auth_token;
+	if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+	try {
+		const decoded = verifyToken(token);
+		req.user = decoded;
+		next();
+	} catch (err) {
+		res.status(401).json({ error: "Invalid token" });
+	}
+};
+
+// Middleware to check admin role
+const isAdmin = (req, res, next) => {
+	if (req.user.role !== "admin") {
+		return res.status(403).json({ error: "Forbidden" });
+	}
+	next();
+};
+
+// Admin routes
+app.use("/api/admin", authenticate, isAdmin);
+
+// Add new store
+app.post("/api/admin/stores", (req, res) => {
+	const newStore = req.body;
+	const stores = require(STORES_PATH);
+	stores.push(newStore);
+	fs.writeFileSync(STORES_PATH, JSON.stringify(stores, null, 2));
+	res.status(201).json(newStore);
+});
+
+// Update store
+app.put("/api/admin/stores/:id", (req, res) => {
+	const storeId = req.params.id;
+	const updatedStore = req.body;
+	const stores = require(STORES_PATH);
+
+	const index = stores.findIndex((s) => s.id === storeId);
+	if (index === -1) return res.status(404).json({ error: "Store not found" });
+
+	stores[index] = { ...stores[index], ...updatedStore };
+	fs.writeFileSync(STORES_PATH, JSON.stringify(stores, null, 2));
+	res.json(stores[index]);
+});
+
+// Delete store
+app.delete("/api/admin/stores/:id", (req, res) => {
+	const storeId = req.params.id;
+	const stores = require(STORES_PATH);
+
+	const filteredStores = stores.filter((s) => s.id !== storeId);
+	if (stores.length === filteredStores.length) {
+		return res.status(404).json({ error: "Store not found" });
+	}
+
+	fs.writeFileSync(STORES_PATH, JSON.stringify(filteredStores, null, 2));
+	res.json({ message: "Store deleted successfully" });
+});
+
 app.get("/", (req, res) => {
 	res.send("Backend is running");
 });
 
+async function initializeDatabase() {
+	try {
+		// First ensure tables exist
+		await model.query(`
+			CREATE TABLE IF NOT EXISTS stores (
+				id SERIAL PRIMARY KEY,
+				name VARCHAR(255) NOT NULL,
+				url VARCHAR(255),
+				district VARCHAR(255),
+				category VARCHAR(255)
+			);
+
+			CREATE TABLE IF NOT EXISTS users (
+				id SERIAL PRIMARY KEY,
+				username VARCHAR(255) UNIQUE NOT NULL,
+				password_hash VARCHAR(255) NOT NULL,
+				role VARCHAR(50) NOT NULL DEFAULT 'user'
+			);
+		`);
+
+		// Then try to create admin user
+		await createAdminUser();
+
+		console.log("Database initialized successfully");
+	} catch (err) {
+		console.error("Database initialization error:", err);
+	}
+}
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
 	console.log(`Server running on port ${PORT}`);
+	// Wait a few seconds for the database to be ready
+	setTimeout(async () => {
+		await initializeDatabase();
+	}, 5000);
 });
+
+async function generatePassword() {
+	const password = "admin123"; // Replace with your desired password
+	const hash = await bcrypt.hash(password, 10); // 10 is the salt rounds
+	console.log("Hashed password:", hash);
+}
+
+generatePassword();
+
+async function createAdminUser() {
+	try {
+		// Check if admin user exists
+		const adminExists = await model.query(
+			"SELECT * FROM users WHERE username = $1",
+			["admin"]
+		);
+
+		if (adminExists.rows.length === 0) {
+			const passwordHash = await hashPassword("admin123");
+			await model.query(
+				"INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3)",
+				["admin", passwordHash, "admin"]
+			);
+			console.log("Admin user created");
+		} else {
+			console.log("Admin user already exists");
+		}
+	} catch (err) {
+		console.error("Error creating admin user:", err);
+	}
+}
+
+// Call this function during server startup
+createAdminUser();
