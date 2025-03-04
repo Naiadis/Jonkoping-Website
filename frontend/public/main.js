@@ -1,6 +1,6 @@
 async function fetchStores() {
 	try {
-		const response = await fetch("http://localhost:5000/api/stores");
+		const response = await fetch("http://localhost:3000/api/stores");
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
