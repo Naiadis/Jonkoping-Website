@@ -119,8 +119,6 @@ async function createUser(username, password, role = "user") {
 app.post("/api/login", async (req, res) => {
 	try {
 		const { username, password } = req.body;
-
-		// Query the database for the user
 		const result = await model.query(
 			"SELECT * FROM users WHERE username = $1",
 			[username]
@@ -134,16 +132,27 @@ app.post("/api/login", async (req, res) => {
 
 		const token = generateToken(user);
 
+		// Set cookie with longer expiration
 		res.cookie("auth_token", token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
+			maxAge: 24 * 60 * 60 * 1000, // 24 hours
 		});
 
-		res.json({ message: "Login successful" });
+		res.json({
+			message: "Login successful",
+			user: { username: user.username, role: user.role },
+		});
 	} catch (error) {
 		console.error("Login error:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
+});
+
+// Add logout route
+app.post("/api/logout", (req, res) => {
+	res.clearCookie("auth_token");
+	res.json({ message: "Logout successful" });
 });
 
 // Middleware to verify JWT

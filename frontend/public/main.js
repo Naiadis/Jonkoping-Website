@@ -185,6 +185,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			if (response.ok) {
 				adminControls.style.display = "block";
+				loginForm.style.display = "none"; // Hide login form
+				document.getElementById("logoutButton").style.display = "block"; // Show logout button
 				alert("Login successful!");
 			} else {
 				alert("Login failed");
@@ -194,6 +196,33 @@ document.addEventListener("DOMContentLoaded", () => {
 			alert("Login error");
 		}
 	});
+
+	// Handle logout
+	document
+		.getElementById("logoutButton")
+		?.addEventListener("click", async () => {
+			try {
+				const response = await fetch("/api/logout", {
+					method: "POST",
+					credentials: "include",
+				});
+
+				if (response.ok) {
+					adminControls.style.display = "none";
+					loginForm.style.display = "block"; // Show login form again
+					document.getElementById("logoutButton").style.display = "none"; // Hide logout button
+					// Clear any input fields
+					document.getElementById("username").value = "";
+					document.getElementById("password").value = "";
+					alert("Logged out successfully!");
+				} else {
+					alert("Logout failed");
+				}
+			} catch (error) {
+				console.error("Logout error:", error);
+				alert("Logout error");
+			}
+		});
 
 	// Handle add store
 	document

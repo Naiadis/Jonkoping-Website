@@ -602,3 +602,26 @@ body {
 	padding: 5px;
 	width: 100%;
 }
+
+.login-btn {
+	background: none;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 1rem;
+	font-weight: 500;
+}
+
+#logoutButton {
+	background: none;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 1rem;
+	font-weight: 500;
+	margin-left: 1rem;
+}
+
+#logoutButton:hover {
+	opacity: 0.8;
+}
