@@ -39,7 +39,10 @@ async function populateDatabase() {
 	try {
 		const stores = require(STORES_PATH);
 		for (const store of stores) {
-			await model.createStore(store);
+			await model.query(
+				"INSERT INTO stores (name, url, district, category) VALUES ($1, $2, $3, $4)",
+				[store.name, store.url, store.district, store.category]
+			);
 		}
 		console.log("Database populated with stores");
 	} catch (err) {

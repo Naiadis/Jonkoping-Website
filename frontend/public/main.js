@@ -350,8 +350,46 @@ async function createAdminUser() {
 	}
 }
 
-function getStoresByCategory(stores, category) {
-	// Map frontend category links to store.json category values
+async function updateCarouselWithCategory(category) {
+	try {
+		const stores = await fetchStores();
+		const categoryStores = getStoresByCategory(stores, category);
+		const slides = categoryStores.map((store) => createCarouselSlide(store));
+
+		const carouselContainer = document.querySelector(".carousel-container");
+		const dotsContainer = document.querySelector(".carousel-dots");
+
+		// Clear existing content
+		carouselContainer.innerHTML = "";
+		dotsContainer.innerHTML = "";
+
+		// Add slides
+		slides.forEach((slide) => {
+			carouselContainer.appendChild(slide);
+		});
+
+		// Always create 3 dots
+		for (let i = 0; i < 3; i++) {
+			const dot = document.createElement("span");
+			dot.classList.add("dot");
+			dot.dataset.index = i;
+			dotsContainer.appendChild(dot);
+		}
+
+		// Initialize first slide and dot as active
+		if (slides.length > 0) {
+			slides[0].classList.add("active");
+			dotsContainer.querySelector(".dot").classList.add("active");
+		}
+
+		// Reinitialize carousel navigation
+		initializeCarouselNavigation();
+	} catch (error) {
+		console.error("Error updating carousel:", error);
+	}
+}
+
+function getStoresByCategory(stores, categoryId) {
 	const categoryMap = {
 		"#clothing": "Clothing & Fashion",
 		"#food": "Food & Drinks",
@@ -362,71 +400,22 @@ function getStoresByCategory(stores, category) {
 		"#others": "Others",
 	};
 
-	// Return all stores if no category selected
-	if (!category) return stores;
-
-	// Filter stores by the selected category
-	return stores.filter((store) => store.category === categoryMap[category]);
+	const targetCategory = categoryMap[categoryId];
+	return stores.filter((store) => store.category === targetCategory);
 }
 
-// Update the carousel with stores from the selected category
-async function updateCarouselWithCategory(category) {
-	const stores = await fetchStores();
-	const categoryStores = getStoresByCategory(stores, category);
-	const slides = categoryStores.map((store) => createCarouselSlide(store));
-
-	// Handle case with no stores in category
-	if (slides.length === 0) {
-		const emptySlide = document.createElement("div");
-		emptySlide.classList.add("carousel-slide");
-		emptySlide.innerHTML = `
-		<div class="shop-content">
-		  <h2>No stores found</h2>
-		  <p>There are no stores in this category at the moment.</p>
-		</div>
-	  `;
-		slides.push(emptySlide);
-	}
-
-	initializeCarousel(slides);
-	initializeCarouselNavigation();
-}
-
-// Initialize category navigation
-function initializeCategoryNavigation() {
+document.addEventListener("DOMContentLoaded", () => {
 	const categoryLinks = document.querySelectorAll(".category-nav a");
 
 	categoryLinks.forEach((link) => {
-		link.addEventListener("click", function (e) {
+		link.addEventListener("click", (e) => {
 			e.preventDefault();
-
-			// Remove active class from all links
 			categoryLinks.forEach((l) => l.classList.remove("active"));
-
-			// Add active class to clicked link
-			this.classList.add("active");
-
-			// Get the href attribute (category)
-			const category = this.getAttribute("href");
-
-			// Update carousel with stores from the selected category
-			updateCarouselWithCategory(category);
+			link.classList.add("active");
+			updateCarouselWithCategory(link.getAttribute("href"));
 		});
 	});
-}
 
-// Update the existing document ready function
-document.addEventListener("DOMContentLoaded", async () => {
-	try {
-		// Initial load with all stores
-		const stores = await fetchStores();
-		const slides = stores.map((store) => createCarouselSlide(store));
-		initializeCarousel(slides);
-		initializeCarouselNavigation();
-
-		// Initialize category navigation
-		initializeCategoryNavigation();
-	} catch (error) {
-		console.error("Error initializing carousel:", error);
-	}
+	// Load initial category (#clothing)
+	updateCarouselWithCategory("#clothing");
 });

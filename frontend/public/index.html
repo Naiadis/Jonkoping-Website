@@ -36,54 +36,58 @@
 					<button class="login-btn">Login</button>
 					<div class="dropdown-content">
 						<form id="loginForm">
-							<input type="text" id="username" placeholder="Username" required>
-							<input type="password" id="password" placeholder="Password" required>
+							<input
+								type="text"
+								id="username"
+								placeholder="Username"
+								required
+							/>
+							<input
+								type="password"
+								id="password"
+								placeholder="Password"
+								required
+							/>
 							<button type="submit">Login</button>
 						</form>
 					</div>
 				</div>
-				<button id="logoutButton" style="display: none;">Logout</button>
+				<button id="logoutButton" style="display: none">Logout</button>
 			</div>
 			<div class="header-blur"></div>
 		</header>
 
-		<section class="hero">
-			<div class="hero-image">
-				<video class="hero-video" autoplay muted loop playsinline>
-					<source src="/frontend/content/JKPimage.mp4" type="video/mp4">
-				</video>
-			</div>
-		<div id="adminControls" style="display: none;">
+		<div id="adminControls" style="display: none">
 			<h3>Admin Controls</h3>
-			
+
 			<form id="addStoreForm">
 				<h4>Add New Store</h4>
-				<input type="text" id="storeName" placeholder="Store Name" required>
-				<input type="text" id="storeUrl" placeholder="Store URL">
-				<input type="text" id="storeDistrict" placeholder="District">
-				<input type="text" id="storeCategory" placeholder="Category">
+				<input type="text" id="storeName" placeholder="Store Name" required />
+				<input type="text" id="storeUrl" placeholder="Store URL" />
+				<input type="text" id="storeDistrict" placeholder="District" />
+				<input type="text" id="storeCategory" placeholder="Category" />
 				<button type="submit">Add Store</button>
 			</form>
 
 			<form id="updateStoreForm">
 				<h4>Update Store</h4>
-				<input type="text" id="updateStoreId" placeholder="Store ID" required>
-				<input type="text" id="updateStoreName" placeholder="Store Name">
-				<input type="text" id="updateStoreUrl" placeholder="Store URL">
-				<input type="text" id="updateStoreDistrict" placeholder="District">
-				<input type="text" id="updateStoreCategory" placeholder="Category">
+				<input type="text" id="updateStoreId" placeholder="Store ID" required />
+				<input type="text" id="updateStoreName" placeholder="Store Name" />
+				<input type="text" id="updateStoreUrl" placeholder="Store URL" />
+				<input type="text" id="updateStoreDistrict" placeholder="District" />
+				<input type="text" id="updateStoreCategory" placeholder="Category" />
 				<button type="submit">Update Store</button>
 			</form>
 
 			<form id="deleteStoreForm">
 				<h4>Delete Store</h4>
-				<input type="text" id="deleteStoreId" placeholder="Store ID" required>
+				<input type="text" id="deleteStoreId" placeholder="Store ID" required />
 				<button type="submit">Delete Store</button>
 			</form>
 		</div>
 
-		<!-- <section class="hero">
-			<div class="hero-image"></div> -->
+		<section class="hero">
+			<div class="hero-image"></div>
 			<div class="scroll-wheel">
 				<svg class="wheel-text" viewBox="0 0 100 100">
 					<defs>
@@ -94,7 +98,7 @@
 					</defs>
 					<text>
 						<textPath href="#circle" startOffset="0%">
-							• Scroll  down • Scroll  down 
+							• Scroll down • Scroll down
 						</textPath>
 					</text>
 				</svg>
@@ -204,7 +208,6 @@
 		</section>
 
 		<footer class="footer">
-			<div class="footer-line-top"></div>
 			<div class="footer-content">
 				<div class="social-media">
 					<h3>Social Media</h3>
@@ -223,7 +226,7 @@
 					<p>Rådhusparken 1</p>
 					<p>551 89 Jönköping</p>
 				</div>
-				
+
 				<div class="back-to-top">
 					<div class="top-wheel">
 						<svg viewBox="0 0 100 100" width="120" height="120">
@@ -241,13 +244,11 @@
 						</svg>
 					</div>
 					<div class="center-arrow">⬆︎</div>
-				</div> 
+				</div>
 			</div>
-		</div>
-		<div class="footer-line-bottom"></div>
-	</footer>
-
-	<script src="main.js"></script>
-	<script src="script.js"></script>
+		</footer>
+		<div class="footer-line"></div>
+		<script src="main.js"></script>
+		<script src="script.js"></script>
 	</body>
 </html>

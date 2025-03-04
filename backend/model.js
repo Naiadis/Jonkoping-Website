@@ -33,8 +33,8 @@ class Model {
 	async createStore(store) {
 		const { name, url, district } = store;
 		const result = await this.query(
-			"INSERT INTO stores (name, url, district) VALUES ($1, $2, $3) RETURNING *",
-			[name, url, district]
+			"INSERT INTO stores (name, url, district, category) VALUES ($1, $2, $3, $4) RETURNING *",
+			[name, url, district, category]
 		);
 		return result.rows[0];
 	}
