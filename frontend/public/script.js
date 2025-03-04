@@ -43,55 +43,55 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Carousel functionality
-  const slides = document.querySelectorAll(".carousel-slide");
-  const dots = document.querySelectorAll(".dot");
-  const prevBtn = document.querySelector(".prev-btn");
-  const nextBtn = document.querySelector(".next-btn");
-  let currentSlide = 0;
+  // // Carousel functionality
+  // const slides = document.querySelectorAll(".carousel-slide");
+  // const dots = document.querySelectorAll(".dot");
+  // const prevBtn = document.querySelector(".prev-btn");
+  // const nextBtn = document.querySelector(".next-btn");
+  // let currentSlide = 0;
 
-  function showSlide(index) {
-    // Remove all classes
-    slides.forEach((slide) => {
-      slide.classList.remove("active", "prev");
-    });
+  // function showSlide(index) {
+  //   // Remove all classes
+  //   slides.forEach((slide) => {
+  //     slide.classList.remove("active", "prev");
+  //   });
 
-    dots.forEach((dot) => {
-      dot.classList.remove("active");
-    });
+  //   dots.forEach((dot) => {
+  //     dot.classList.remove("active");
+  //   });
 
-    // Add active class to current slide
-    slides[index].classList.add("active");
-    dots[index].classList.add("active");
+  //   // Add active class to current slide
+  //   slides[index].classList.add("active");
+  //   dots[index].classList.add("active");
 
-    // Add prev class to previous slide for animation
-    const prevIndex = (index - 1 + slides.length) % slides.length;
-    slides[prevIndex].classList.add("prev");
+  //   // Add prev class to previous slide for animation
+  //   const prevIndex = (index - 1 + slides.length) % slides.length;
+  //   slides[prevIndex].classList.add("prev");
 
-    currentSlide = index;
-  }
+  //   currentSlide = index;
+  // }
 
-  // Initialize first slide
-  showSlide(0);
+  // // Initialize first slide
+  // showSlide(0);
 
-  // Next button
-  nextBtn.addEventListener("click", function () {
-    const nextSlide = (currentSlide + 1) % slides.length;
-    showSlide(nextSlide);
-  });
+  // // Next button
+  // nextBtn.addEventListener("click", function () {
+  //   const nextSlide = (currentSlide + 1) % slides.length;
+  //   showSlide(nextSlide);
+  // });
 
-  // Previous button
-  prevBtn.addEventListener("click", function () {
-    const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
-    showSlide(prevSlide);
-  });
+  // // Previous button
+  // prevBtn.addEventListener("click", function () {
+  //   const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
+  //   showSlide(prevSlide);
+  // });
 
-  // Dot navigation
-  dots.forEach((dot, index) => {
-    dot.addEventListener("click", function () {
-      showSlide(index);
-    });
-  });
+  // // Dot navigation
+  // dots.forEach((dot, index) => {
+  //   dot.addEventListener("click", function () {
+  //     showSlide(index);
+  //   });
+  // });
 
   // Animate sections on scroll
   function animateSections() {
