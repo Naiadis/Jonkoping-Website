@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-
   // Scroll wheel animation
   const scrollWheel = document.querySelector(".scroll-wheel");
 
@@ -7,7 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
   scrollWheel.addEventListener("click", function () {
     const shopsSection = document.querySelector(".shops-section");
     if (shopsSection) {
-      shopsSection.scrollIntoView({ behavior: "smooth" });
+      shopsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   });
 
@@ -108,8 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
         section.classList.add("visible");
       }
     });
-
-    updateScrollWheelColor();
   }
 
   // Add language toggle functionality
@@ -127,19 +127,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Event listeners
   window.addEventListener("scroll", () => {
     animateSections();
-    updateScrollWheelColor();
   });
 
   // Initial calls
   animateSections();
-  updateScrollWheelColor();
 
   function animate() {
-    // updateWheelTextColor();
     requestAnimationFrame(animate);
   }
   animate();
-
 
   // Update on scroll with throttling
   let ticking = false;
@@ -155,4 +151,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add scroll listener for sections
   window.addEventListener("scroll", animateSections);
+
+  let lastScrollPosition = 0;
+  let isScrollingDown = false;
+  const header = document.querySelector(".header");
+  const scrollThreshold = 50; // numărul de pixeli după care header-ul se ascunde
+
+  function handleScroll() {
+    const currentScrollPosition = window.pageYOffset;
+
+    // Determinăm direcția scroll-ului
+    if (currentScrollPosition > lastScrollPosition && !isScrollingDown) {
+      // Scroll în jos
+      isScrollingDown = true;
+      header.classList.add("hidden");
+    } else if (currentScrollPosition < lastScrollPosition && isScrollingDown) {
+      // Scroll în sus
+      isScrollingDown = false;
+      header.classList.remove("hidden");
+    }
+
+    // Actualizăm ultima poziție cunoscută
+    lastScrollPosition = currentScrollPosition;
+  }
+
+  // Adăugăm un debounce pentru performanță mai bună
+  let scrollTimeout;
+  window.addEventListener("scroll", () => {
+    if (scrollTimeout) {
+      window.cancelAnimationFrame(scrollTimeout);
+    }
+
+    scrollTimeout = window.requestAnimationFrame(() => {
+      handleScroll();
+    });
+  });
 });
