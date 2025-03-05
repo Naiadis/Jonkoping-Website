@@ -1,189 +1,199 @@
 document.addEventListener("DOMContentLoaded", function () {
-	// Scroll wheel animation
-	const scrollWheel = document.querySelector(".scroll-wheel");
+  // Scroll wheel animation
+  const scrollWheel = document.querySelector(".scroll-wheel");
 
-	// Scroll to shops section when scroll wheel is clicked
-	scrollWheel.addEventListener("click", function () {
-		const shopsSection = document.querySelector(".shops-section");
-		if (shopsSection) {
-			shopsSection.scrollIntoView({
-				behavior: "smooth",
-				block: "start",
-			});
-		}
-	});
+  // Scroll to shops section when scroll wheel is clicked
+  scrollWheel.addEventListener("click", function () {
+    const shopsSection = document.querySelector(".shops-section");
+    if (shopsSection) {
+      shopsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  });
+// Cursor circle functionality
+const cursorCircle = document.querySelector('.cursor-circle');
 
-	// Back to top button
-	const backToTop = document.querySelector(".back-to-top");
-	backToTop.addEventListener("click", function () {
-		window.scrollTo({
-			top: 0,
-			behavior: "smooth",
-		});
-	});
+document.addEventListener('mousemove', (e) => {
+  cursorCircle.style.left = `${e.clientX}px`;
+  cursorCircle.style.top = `${e.clientY}px`;
+});
 
-	// Rotate the wheel text
-	function rotateWheelText() {
-		scrollWheel.querySelector("svg").style.transform = `rotate(${
-			(Date.now() / 50) % 360
-		}deg)`;
-		requestAnimationFrame(rotateWheelText);
-	}
-	rotateWheelText();
+  // Back to top button
+  const backToTop = document.querySelector(".back-to-top");
+  backToTop.addEventListener("click", function () {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  });
 
-	// Shop categories
-	const categoryLinks = document.querySelectorAll(".category-nav a");
-	categoryLinks.forEach((link) => {
-		link.addEventListener("click", function (e) {
-			e.preventDefault();
+  // Rotate the wheel text
+  function rotateWheelText() {
+    scrollWheel.querySelector("svg").style.transform = `rotate(${
+      (Date.now() / 50) % 360
+    }deg)`;
+    requestAnimationFrame(rotateWheelText);
+  }
+  rotateWheelText();
 
-			// Remove active class from all links
-			categoryLinks.forEach((l) => l.classList.remove("active"));
+  // Shop categories
+  const categoryLinks = document.querySelectorAll(".category-nav a");
+  categoryLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
 
-			// Add active class to clicked link
-			this.classList.add("active");
-		});
-	});
+      // Remove active class from all links
+      categoryLinks.forEach((l) => l.classList.remove("active"));
 
-	// // Carousel functionality
-	// const slides = document.querySelectorAll(".carousel-slide");
-	// const dots = document.querySelectorAll(".dot");
-	// const prevBtn = document.querySelector(".prev-btn");
-	// const nextBtn = document.querySelector(".next-btn");
-	// let currentSlide = 0;
+      // Add active class to clicked link
+      this.classList.add("active");
+    });
+  });
 
-	// function showSlide(index) {
-	//   // Remove all classes
-	//   slides.forEach((slide) => {
-	//     slide.classList.remove("active", "prev");
-	//   });
+  // // Carousel functionality
+  // const slides = document.querySelectorAll(".carousel-slide");
+  // const dots = document.querySelectorAll(".dot");
+  // const prevBtn = document.querySelector(".prev-btn");
+  // const nextBtn = document.querySelector(".next-btn");
+  // let currentSlide = 0;
 
-	//   dots.forEach((dot) => {
-	//     dot.classList.remove("active");
-	//   });
+  // function showSlide(index) {
+  //   // Remove all classes
+  //   slides.forEach((slide) => {
+  //     slide.classList.remove("active", "prev");
+  //   });
 
-	//   // Add active class to current slide
-	//   slides[index].classList.add("active");
-	//   dots[index].classList.add("active");
+  //   dots.forEach((dot) => {
+  //     dot.classList.remove("active");
+  //   });
 
-	//   // Add prev class to previous slide for animation
-	//   const prevIndex = (index - 1 + slides.length) % slides.length;
-	//   slides[prevIndex].classList.add("prev");
+  //   // Add active class to current slide
+  //   slides[index].classList.add("active");
+  //   dots[index].classList.add("active");
 
-	//   currentSlide = index;
-	// }
+  //   // Add prev class to previous slide for animation
+  //   const prevIndex = (index - 1 + slides.length) % slides.length;
+  //   slides[prevIndex].classList.add("prev");
 
-	// // Initialize first slide
-	// showSlide(0);
+  //   currentSlide = index;
+  // }
 
-	// // Next button
-	// nextBtn.addEventListener("click", function () {
-	//   const nextSlide = (currentSlide + 1) % slides.length;
-	//   showSlide(nextSlide);
-	// });
+  // // Initialize first slide
+  // showSlide(0);
 
-	// // Previous button
-	// prevBtn.addEventListener("click", function () {
-	//   const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
-	//   showSlide(prevSlide);
-	// });
+  // // Next button
+  // nextBtn.addEventListener("click", function () {
+  //   const nextSlide = (currentSlide + 1) % slides.length;
+  //   showSlide(nextSlide);
+  // });
 
-	// // Dot navigation
-	// dots.forEach((dot, index) => {
-	//   dot.addEventListener("click", function () {
-	//     showSlide(index);
-	//   });
-	// });
+  // // Previous button
+  // prevBtn.addEventListener("click", function () {
+  //   const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
+  //   showSlide(prevSlide);
+  // });
 
-	// Animate sections on scroll
-	function animateSections() {
-		const sections = [
-			document.querySelector(".shops-section"),
-			document.querySelector(".footer"),
-		];
+  // // Dot navigation
+  // dots.forEach((dot, index) => {
+  //   dot.addEventListener("click", function () {
+  //     showSlide(index);
+  //   });
+  // });
 
-		sections.forEach((section) => {
-			const sectionTop = section.getBoundingClientRect().top;
-			const windowHeight = window.innerHeight;
+  // Animate sections on scroll
+  function animateSections() {
+    const sections = [
+      document.querySelector(".shops-section"),
+      document.querySelector(".footer"),
+    ];
 
-			if (sectionTop < windowHeight * 0.75) {
-				section.classList.add("visible");
-			}
-		});
-	}
+    sections.forEach((section) => {
+      const sectionTop = section.getBoundingClientRect().top;
+      const windowHeight = window.innerHeight;
 
-	// Add language toggle functionality
-	const languageButtons = document.querySelectorAll(".language-options button");
-	const languageBtn = document.querySelector(".language-btn");
+      if (sectionTop < windowHeight * 0.75) {
+        section.classList.add("visible");
+      }
+    });
+  }
 
-	languageButtons.forEach((button) => {
-		button.addEventListener("click", () => {
-			languageButtons.forEach((btn) => btn.classList.remove("active"));
-			button.classList.add("active");
-			languageBtn.textContent = button.textContent;
-		});
-	});
+  // Add language toggle functionality
+  const languageButtons = document.querySelectorAll(".language-options button");
+  const languageBtn = document.querySelector(".language-btn");
 
-	// Event listeners
-	window.addEventListener("scroll", () => {
-		animateSections();
-	});
+  languageButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      languageButtons.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+      languageBtn.textContent = button.textContent;
+    });
+  });
 
-	// Initial calls
-	animateSections();
+  // Event listeners
+  window.addEventListener("scroll", () => {
+    animateSections();
+  });
 
-	function animate() {
-		requestAnimationFrame(animate);
-	}
-	animate();
+  // Initial calls
+  animateSections();
 
-	// Update on scroll with throttling
-	let ticking = false;
-	window.addEventListener("scroll", () => {
-		if (!ticking) {
-			window.requestAnimationFrame(() => {
-				// updateTextColor();
-				ticking = false;
-			});
-			ticking = true;
-		}
-	});
+  function animate() {
+    requestAnimationFrame(animate);
+  }
+  animate();
 
-	// Add scroll listener for sections
-	window.addEventListener("scroll", animateSections);
+  // Update on scroll with throttling
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        // updateTextColor();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
 
-	let lastScrollPosition = 0;
-	let isScrollingDown = false;
-	const header = document.querySelector(".header");
-	const scrollThreshold = 50; // numărul de pixeli după care header-ul se ascunde
+  // Add scroll listener for sections
+  window.addEventListener("scroll", animateSections);
 
-	function handleScroll() {
-		const currentScrollPosition = window.pageYOffset;
+  let lastScrollPosition = 0;
+  let isScrollingDown = false;
+  const header = document.querySelector(".header");
+  // const scrollThreshold = 50; // numărul de pixeli după care header-ul se ascunde
 
-		// Determinăm direcția scroll-ului
-		if (currentScrollPosition > lastScrollPosition && !isScrollingDown) {
-			// Scroll în jos
-			isScrollingDown = true;
-			header.classList.add("hidden");
-		} else if (currentScrollPosition < lastScrollPosition && isScrollingDown) {
-			// Scroll în sus
-			isScrollingDown = false;
-			header.classList.remove("hidden");
-		}
+  function handleScroll() {
+    const currentScrollPosition = window.pageYOffset;
 
-		// Actualizăm ultima poziție cunoscută
-		lastScrollPosition = currentScrollPosition;
-	}
+    if (currentScrollPosition > lastScrollPosition && !isScrollingDown) {
+      isScrollingDown = true;
+      header.classList.add("hidden");
+    } else if (currentScrollPosition < lastScrollPosition && isScrollingDown) {
+      isScrollingDown = false;
+      header.classList.remove("hidden");
+    }
 
-	// Adăugăm un debounce pentru performanță mai bună
-	let scrollTimeout;
-	window.addEventListener("scroll", () => {
-		if (scrollTimeout) {
-			window.cancelAnimationFrame(scrollTimeout);
-		}
+    lastScrollPosition = currentScrollPosition;
+  }
 
-		scrollTimeout = window.requestAnimationFrame(() => {
-			handleScroll();
-		});
-	});
+  let scrollTimeout;
+  window.addEventListener("scroll", () => {
+    if (scrollTimeout) {
+      window.cancelAnimationFrame(scrollTimeout);
+    }
+
+    scrollTimeout = window.requestAnimationFrame(() => {
+      handleScroll();
+    });
+  });
+
+  // Hamburger menu functionality
+  const hamburger = document.querySelector(".hamburger");
+  const mainNav = document.querySelector(".main-nav");
+
+  hamburger.addEventListener("click", () => {
+    mainNav.classList.toggle("active"); // Activează/dezactivează meniul
+  });
 });
