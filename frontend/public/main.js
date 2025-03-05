@@ -458,47 +458,35 @@ async function addNewStore(store) {
 
 		// Check for specific error statuses
 		if (response.status === 401 || response.status === 403) {
-			alert("Your session has expired. Please log in again.");
+			alert("Authentication required. Please log in again.");
 			await checkLoginStatus(); // Refresh login status
 			return;
 		}
 
-		// Read response text for more detailed error information
-		const responseText = await response.text();
-		console.log("Add store response text:", responseText);
-
-		// Try to parse as JSON if possible
-		let responseData;
-		try {
-			responseData = JSON.parse(responseText);
-		} catch (e) {
-			responseData = { message: responseText };
+		if (!response.ok) {
+			const errorText = await response.text();
+			console.error("Add store error response:", errorText);
+			alert(`Error adding store: ${response.status} ${response.statusText}`);
+			return;
 		}
 
-		if (response.ok) {
-			alert("Store added successfully");
+		const responseData = await response.json();
+		alert("Store added successfully");
 
-			// Clear form
-			document.getElementById("newStoreName").value = "";
-			document.getElementById("newStoreUrl").value = "";
-			document.getElementById("newStoreDistrict").value = "";
-			document.getElementById("newStoreCategory").value = "";
+		// Clear form
+		document.getElementById("newStoreName").value = "";
+		document.getElementById("newStoreUrl").value = "";
+		document.getElementById("newStoreDistrict").value = "";
+		document.getElementById("newStoreCategory").value = "";
 
-			// Refresh the same category view
-			updateCarouselWithCategory(currentCategoryId);
-		} else {
-			// More detailed error handling
-			const errorMessage =
-				responseData.error || responseData.message || "Failed to add store";
-			alert(`Error: ${errorMessage}`);
-			console.error("Failed to add store:", responseData);
-		}
+		// Refresh the same category view
+		updateCarouselWithCategory(currentCategoryId);
 	} catch (error) {
 		console.error("Add store error:", error);
 		alert(`Network error: ${error.message}`);
 	}
 }
-// Check login status on page load
+
 async function checkLoginStatus() {
 	try {
 		const response = await fetch("/api/check-auth", {

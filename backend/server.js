@@ -188,7 +188,8 @@ app.post("/api/login", async (req, res) => {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
 			maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-			sameSite: "lax",
+			sameSite: "strict",
+			domain: "localhost",
 		});
 
 		res.json({
@@ -203,35 +204,31 @@ app.post("/api/login", async (req, res) => {
 
 // Logout route
 app.post("/api/logout", (req, res) => {
-	res.clearCookie("auth_token");
+	res.clearCookie("auth_token", {
+		httpOnly: true,
+		secure: false, // Set to true in production
+		sameSite: "strict",
+		domain: "localhost",
+	});
 	res.json({ message: "Logout successful" });
 });
 
 // ADMIN ROUTES
 // Add a new store
-app.post("/api/admin/stores", async (req, res) => {
+app.post("/api/admin/stores", authenticate, isAdmin, async (req, res) => {
 	try {
 		console.log("Adding new store:", req.body);
 		const newStore = req.body;
 
-		// Add to JSON file
-		const stores = JSON.parse(fs.readFileSync(STORES_PATH, "utf8"));
-		if (!newStore.id) {
-			const maxId = stores.reduce(
-				(max, store) =>
-					store.id && parseInt(store.id) > max ? parseInt(store.id) : max,
-				0
-			);
-			newStore.id = (maxId + 1).toString();
-		}
-
-		stores.push(newStore);
-		fs.writeFileSync(STORES_PATH, JSON.stringify(stores, null, 2));
-
-		// Add to database
 		const createdStore = await model.createStore(newStore);
 
-		res.status(201).json(createdStore || newStore);
+		if (!createdStore) {
+			return res
+				.status(500)
+				.json({ error: "Failed to create store in database" });
+		}
+
+		res.status(201).json(createdStore);
 	} catch (err) {
 		console.error("Error adding store:", err);
 		res.status(500).json({ error: "Server error" });
