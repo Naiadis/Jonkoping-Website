@@ -173,6 +173,9 @@ function toggleEditForm(store, slideElement) {
       <option value="Resecentrum" ${
 				store.district === "Resecentrum" ? "selected" : ""
 			}>Resecentrum</option>
+			<option value="Centrum" ${
+				store.district === "Centrum" ? "selected" : ""
+			}>Centrum</option>
     </select>
   </div>
   <div class="form-field">
@@ -242,6 +245,7 @@ async function updateStore(store) {
 			.getAttribute("href");
 
 		console.log(`Sending update request for store ID: ${store.id}`);
+
 		const response = await fetch(`/api/admin/stores/${store.id}`, {
 			method: "PUT",
 			headers: {
@@ -250,6 +254,13 @@ async function updateStore(store) {
 			body: JSON.stringify(store),
 			credentials: "include",
 		});
+
+		// Check for authentication errors
+		if (response.status === 401 || response.status === 403) {
+			alert("Your session has expired. Please log in again.");
+			await checkLoginStatus(); // Refresh login status
+			return;
+		}
 
 		const responseText = await response.text();
 		console.log(
@@ -265,16 +276,17 @@ async function updateStore(store) {
 
 		if (response.ok) {
 			alert("Store updated successfully");
-
 			// Refresh the same category view
 			updateCarouselWithCategory(currentCategoryId);
 		} else {
-			alert(`Failed to update store: ${responseData.error || "Unknown error"}`);
+			const errorMessage =
+				responseData.error || responseData.message || "Failed to update store";
+			alert(`Error: ${errorMessage}`);
 			console.error("Failed to update store:", responseData);
 		}
 	} catch (error) {
 		console.error("Update store error:", error);
-		alert("Error updating store");
+		alert(`Network error: ${error.message}`);
 	}
 }
 
@@ -289,6 +301,13 @@ async function deleteStore(storeId) {
 			method: "DELETE",
 			credentials: "include",
 		});
+
+		// Check for authentication errors
+		if (response.status === 401 || response.status === 403) {
+			alert("Your session has expired. Please log in again.");
+			await checkLoginStatus(); // Refresh login status
+			return;
+		}
 
 		const responseText = await response.text();
 		console.log(
@@ -309,12 +328,14 @@ async function deleteStore(storeId) {
 				document.querySelector(".category-nav a.active").getAttribute("href")
 			);
 		} else {
-			alert(`Failed to delete store: ${responseData.error || "Unknown error"}`);
+			const errorMessage =
+				responseData.error || responseData.message || "Failed to delete store";
+			alert(`Error: ${errorMessage}`);
 			console.error("Failed to delete store:", responseData);
 		}
 	} catch (error) {
 		console.error("Delete store error:", error);
-		alert("Error deleting store");
+		alert(`Network error: ${error.message}`);
 	}
 }
 
@@ -428,10 +449,21 @@ async function addNewStore(store) {
 			credentials: "include",
 		});
 
-		// For debugging, log the full response
+		// Log full response details for debugging
 		console.log("Add store response status:", response.status);
+		console.log(
+			"Add store response headers:",
+			Object.fromEntries(response.headers.entries())
+		);
 
-		// Read the response as text first
+		// Check for specific error statuses
+		if (response.status === 401 || response.status === 403) {
+			alert("Your session has expired. Please log in again.");
+			await checkLoginStatus(); // Refresh login status
+			return;
+		}
+
+		// Read response text for more detailed error information
 		const responseText = await response.text();
 		console.log("Add store response text:", responseText);
 
@@ -440,7 +472,6 @@ async function addNewStore(store) {
 		try {
 			responseData = JSON.parse(responseText);
 		} catch (e) {
-			// Not valid JSON, use text as is
 			responseData = { message: responseText };
 		}
 
@@ -456,15 +487,17 @@ async function addNewStore(store) {
 			// Refresh the same category view
 			updateCarouselWithCategory(currentCategoryId);
 		} else {
-			alert(`Failed to add store: ${responseData.error || "Unknown error"}`);
+			// More detailed error handling
+			const errorMessage =
+				responseData.error || responseData.message || "Failed to add store";
+			alert(`Error: ${errorMessage}`);
 			console.error("Failed to add store:", responseData);
 		}
 	} catch (error) {
 		console.error("Add store error:", error);
-		alert(`Error adding store: ${error.message}`);
+		alert(`Network error: ${error.message}`);
 	}
 }
-
 // Check login status on page load
 async function checkLoginStatus() {
 	try {
