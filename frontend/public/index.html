@@ -32,7 +32,7 @@
 						</li>
 					</ul>
 				</nav>
-				<div class="login-dropdown">
+				<div id="loginDropdown" class="login-dropdown">
 					<button class="login-btn">Login</button>
 					<div class="dropdown-content">
 						<form id="loginForm">
@@ -57,35 +57,6 @@
 			<div class="header-blur"></div>
 		</header>
 
-		<div id="adminControls" style="display: none">
-			<h3>Admin Controls</h3>
-
-			<form id="addStoreForm">
-				<h4>Add New Store</h4>
-				<input type="text" id="storeName" placeholder="Store Name" required />
-				<input type="text" id="storeUrl" placeholder="Store URL" />
-				<input type="text" id="storeDistrict" placeholder="District" />
-				<input type="text" id="storeCategory" placeholder="Category" />
-				<button type="submit">Add Store</button>
-			</form>
-
-			<form id="updateStoreForm">
-				<h4>Update Store</h4>
-				<input type="text" id="updateStoreId" placeholder="Store ID" required />
-				<input type="text" id="updateStoreName" placeholder="Store Name" />
-				<input type="text" id="updateStoreUrl" placeholder="Store URL" />
-				<input type="text" id="updateStoreDistrict" placeholder="District" />
-				<input type="text" id="updateStoreCategory" placeholder="Category" />
-				<button type="submit">Update Store</button>
-			</form>
-
-			<form id="deleteStoreForm">
-				<h4>Delete Store</h4>
-				<input type="text" id="deleteStoreId" placeholder="Store ID" required />
-				<button type="submit">Delete Store</button>
-			</form>
-		</div>
-
 		<section class="hero">
 			<div class="hero-image"></div>
 			<div class="scroll-wheel">
@@ -105,6 +76,48 @@
 				<div class="wheel-arrow">⬇︎</div>
 			</div>
 		</section>
+
+		<div id="adminControls" style="display: none" class="admin-panel">
+			<h3>Admin Controls</h3>
+
+			<form id="addStoreForm" class="admin-form">
+				<h4>Add New Store</h4>
+				<div class="form-group">
+					<input
+						type="text"
+						id="newStoreName"
+						placeholder="Store Name"
+						required
+					/>
+				</div>
+				<div class="form-group">
+					<input type="text" id="newStoreUrl" placeholder="Store URL" />
+				</div>
+				<div class="form-group">
+					<select id="newStoreDistrict">
+						<option value="">Select District</option>
+						<option value="Öster">Öster</option>
+						<option value="Väster">Väster</option>
+						<option value="Atollen">Atollen</option>
+						<option value="Tändsticksområdet">Tändsticksområdet</option>
+						<option value="Resecentrum">Resecentrum</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<select id="newStoreCategory" required>
+						<option value="">Select Category</option>
+						<option value="Clothing & Fashion">Clothing & Fashion</option>
+						<option value="Food & Drinks">Food & Drinks</option>
+						<option value="Health & Beauty">Health & Beauty</option>
+						<option value="Home & Lifestyle">Home & Lifestyle</option>
+						<option value="Services">Services</option>
+						<option value="Specialty & Hobby">Specialty & Hobby</option>
+						<option value="Others">Others</option>
+					</select>
+				</div>
+				<button type="submit" class="admin-btn">Add Store</button>
+			</form>
+		</div>
 
 		<section class="shops-section">
 			<h2>SHOPS</h2>
@@ -128,82 +141,9 @@
 					<button class="next-btn">Next &gt;</button>
 				</div>
 
-				<div class="carousel-container">
-					<!-- <div class="carousel-slide active">
-						<div class="shop-content">
-							<h2>SHOP NAME #1</h2>
-							<p>
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-								eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-								enim ad minim veniam, quis nostrud exercitation ullamco laboris
-								nisi ut aliquip ex ea commodo consequat.
-							</p>
-							<div class="shop-district">
-								<strong>District:</strong> Centrum
-							</div>
-							<a href="#" class="visit-btn">Visit Website</a>
-						</div>
-						<div class="shop-images">
-							<div class="main-image"></div>
-							<div class="small-images">
-								<div class="small-image"></div>
-								<div class="small-image"></div>
-							</div>
-						</div>
-					</div>
+				<div class="carousel-container"></div>
 
-					<div class="carousel-slide">
-						<div class="shop-content">
-							<h2>SHOP NAME #2</h2>
-							<p>
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-								eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-								enim ad minim veniam, quis nostrud exercitation ullamco laboris
-								nisi ut aliquip ex ea commodo consequat.
-							</p>
-							<div class="shop-district">
-								<strong>District:</strong> Centrum
-							</div>
-							<a href="#" class="visit-btn">Visit Website</a>
-						</div>
-						<div class="shop-images">
-							<div class="main-image"></div>
-							<div class="small-images">
-								<div class="small-image"></div>
-								<div class="small-image"></div>
-							</div>
-						</div>
-					</div>
-
-					<div class="carousel-slide">
-						<div class="shop-content">
-							<h2>SHOP NAME #3</h2>
-							<p>
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-								eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-								enim ad minim veniam, quis nostrud exercitation ullamco laboris
-								nisi ut aliquip ex ea commodo consequat.
-							</p>
-							<div class="shop-district">
-								<strong>District:</strong> Centrum
-							</div>
-							<a href="#" class="visit-btn">Visit Website</a>
-						</div>
-						<div class="shop-images">
-							<div class="main-image"></div>
-							<div class="small-images">
-								<div class="small-image"></div>
-								<div class="small-image"></div>
-							</div>
-						</div>
-					</div> -->
-				</div>
-
-				<div class="carousel-dots">
-					<!-- <span class="dot active" data-index="0"></span>
-					<span class="dot" data-index="1"></span>
-					<span class="dot" data-index="2"></span> -->
-				</div>
+				<div class="carousel-dots"></div>
 			</div>
 		</section>
 
