@@ -15,6 +15,22 @@ document.addEventListener("DOMContentLoaded", function () {
   // Cursor circle functionality
   const cursorCircle = document.querySelector(".cursor-circle");
 
+  // Define all clickable elements
+  const clickableElements =
+    'a, button, .visit-btn,.scroll-wheel, .back-to-top, .language-btn, .hamburger, input[type="submit"]';
+
+  // Add hover effect
+  document.querySelectorAll(clickableElements).forEach((element) => {
+    element.addEventListener("mouseenter", () => {
+      cursorCircle.classList.add("cursor-hover");
+    });
+
+    element.addEventListener("mouseleave", () => {
+      cursorCircle.classList.remove("cursor-hover");
+    });
+  });
+
+  // Ensure cursor follows mouse
   document.addEventListener("mousemove", (e) => {
     cursorCircle.style.left = `${e.clientX}px`;
     cursorCircle.style.top = `${e.clientY}px`;
@@ -194,6 +210,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const mainNav = document.querySelector(".main-nav");
 
   hamburger.addEventListener("click", () => {
-    mainNav.classList.toggle("active"); // Activează/dezactivează meniul
+    mainNav.classList.toggle("active"); // Toggle the menu
+  });
+
+  // Login dropdown functionality
+  const loginDropdown = document.getElementById("loginDropdown");
+  const loginBtn = document.querySelector(".login-btn");
+  const dropdownContent = document.querySelector(".dropdown-content");
+
+  loginBtn.addEventListener("click", () => {
+    dropdownContent.style.display =
+      dropdownContent.style.display === "block" ? "none" : "block";
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (event) => {
+    if (!loginDropdown.contains(event.target)) {
+      dropdownContent.style.display = "none"; // Hide dropdown if clicked outside
+    }
   });
 });
