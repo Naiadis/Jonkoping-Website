@@ -151,7 +151,7 @@ app.get("/api/check-auth", (req, res) => {
 	try {
 		const token = req.cookies.auth_token;
 		if (!token) {
-			return res.status(200).json({ authenticated: false });
+			return res.status(401).json({ authenticated: false });
 		}
 
 		const decoded = verifyToken(token);
@@ -162,7 +162,7 @@ app.get("/api/check-auth", (req, res) => {
 		});
 	} catch (err) {
 		console.error("Auth check error:", err);
-		return res.status(200).json({ authenticated: false });
+		return res.status(401).json({ authenticated: false });
 	}
 });
 
