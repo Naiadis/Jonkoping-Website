@@ -12,13 +12,13 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   });
-// Cursor circle functionality
-const cursorCircle = document.querySelector('.cursor-circle');
+  // Cursor circle functionality
+  const cursorCircle = document.querySelector(".cursor-circle");
 
-document.addEventListener('mousemove', (e) => {
-  cursorCircle.style.left = `${e.clientX}px`;
-  cursorCircle.style.top = `${e.clientY}px`;
-});
+  document.addEventListener("mousemove", (e) => {
+    cursorCircle.style.left = `${e.clientX}px`;
+    cursorCircle.style.top = `${e.clientY}px`;
+  });
 
   // Back to top button
   const backToTop = document.querySelector(".back-to-top");
