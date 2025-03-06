@@ -36,7 +36,7 @@ app.use(cookieParser());
 // Authentication middleware
 const authenticate = (req, res, next) => {
 	const token = req.cookies.auth_token;
-	if (!token) return res.status(401).json({ error: "Unauthorized" });
+	if (!token) return res.status(200).json({ error: "Unauthorized" });
 
 	try {
 		const decoded = verifyToken(token);
@@ -44,7 +44,7 @@ const authenticate = (req, res, next) => {
 		next();
 	} catch (err) {
 		console.error("Authentication error:", err);
-		res.status(401).json({ error: "Invalid token" });
+		res.status(200).json({ error: "Invalid token" });
 	}
 };
 
