@@ -540,3 +540,117 @@ function getStoresByCategory(stores, categoryId) {
 	const targetCategory = categoryMap[categoryId];
 	return stores.filter((store) => store.category === targetCategory);
 }
+
+// Document ready function
+document.addEventListener("DOMContentLoaded", async () => {
+	// Check login status
+	const isLoggedIn = await checkLoginStatus();
+
+	// Initialize categories and first category view
+	const categoryLinks = document.querySelectorAll(".category-nav a");
+	categoryLinks.forEach((link) => {
+		link.addEventListener("click", (e) => {
+			e.preventDefault();
+			categoryLinks.forEach((l) => l.classList.remove("active"));
+			link.classList.add("active");
+			updateCarouselWithCategory(link.getAttribute("href"));
+		});
+	});
+
+	// Handle login form
+	const loginForm = document.getElementById("loginForm");
+	loginForm?.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		const username = document.getElementById("username").value;
+		const password = document.getElementById("password").value;
+
+		try {
+			const response = await fetch("/api/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ username, password }),
+				credentials: "include",
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				if (data.user.role === "admin") {
+					document.getElementById("adminControls").style.display = "block";
+					document.getElementById("loginDropdown").style.display = "none";
+					document.getElementById("logoutButton").style.display = "block";
+
+					// Refresh the current view to add admin buttons
+					updateCarouselWithCategory(
+						document
+							.querySelector(".category-nav a.active")
+							.getAttribute("href")
+					);
+
+					alert("Admin login successful!");
+				} else {
+					alert("Welcome! You are logged in as a regular user.");
+				}
+			} else {
+				alert("Login failed. Please check your credentials.");
+			}
+		} catch (error) {
+			console.error("Login error:", error);
+			alert("Login error. Please try again later.");
+		}
+	});
+
+	// Handle logout
+	document
+		.getElementById("logoutButton")
+		?.addEventListener("click", async () => {
+			try {
+				const response = await fetch("/api/logout", {
+					method: "POST",
+					credentials: "include",
+				});
+
+				if (response.ok) {
+					document.getElementById("adminControls").style.display = "none";
+					document.getElementById("loginDropdown").style.display = "block";
+					document.getElementById("logoutButton").style.display = "none";
+
+					// Refresh the current view to remove admin buttons
+					updateCarouselWithCategory(
+						document
+							.querySelector(".category-nav a.active")
+							.getAttribute("href")
+					);
+
+					alert("Logged out successfully!");
+				} else {
+					alert("Logout failed. Please try again.");
+				}
+			} catch (error) {
+				console.error("Logout error:", error);
+				alert("Logout error. Please try again later.");
+			}
+		});
+
+	// Handle new store form
+	document
+		.getElementById("addStoreForm")
+		?.addEventListener("submit", async (e) => {
+			e.preventDefault();
+
+			const newStore = {
+				name: document.getElementById("newStoreName").value,
+				url: document.getElementById("newStoreUrl").value,
+				district: document.getElementById("newStoreDistrict").value,
+				category: document.getElementById("newStoreCategory").value,
+			};
+
+			await addNewStore(newStore);
+		});
+
+	// If not already logged in, load initial category
+	if (!isLoggedIn) {
+		updateCarouselWithCategory("#clothing");
+	}
+});
