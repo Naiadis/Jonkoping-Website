@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
+/* Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -14,6 +15,7 @@
   --purple: #9747ff;
 }
 
+/* Body Styles */
 body {
   font-family: "Inter", sans-serif;
   color: var(--black);
@@ -29,7 +31,7 @@ body {
   padding: 0;
 }
 
-/* Header ajustat */
+/* Header Styles */
 .header {
   position: fixed;
   top: 0;
@@ -68,6 +70,7 @@ body {
   animation: slideUp 1s forwards 0.5s;
 }
 
+/* Keyframes for Header Animation */
 @keyframes slideDown {
   to {
     transform: translateY(0);
@@ -80,6 +83,7 @@ body {
   }
 }
 
+/* Logo Styles */
 .logo {
   color: white;
   font-size: 2.5rem;
@@ -88,6 +92,7 @@ body {
   text-align: center;
 }
 
+/* Navigation Styles */
 .main-nav {
   width: 100%;
   display: flex;
@@ -118,7 +123,7 @@ body {
   opacity: 0.8;
 }
 
-/* Language Dropdown */
+/* Language Dropdown Styles */
 .language-dropdown {
   position: relative;
 }
@@ -169,7 +174,7 @@ body {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Hero Section */
+/* Hero Section Styles */
 .hero {
   height: 100vh;
   position: relative;
@@ -189,7 +194,7 @@ body {
   overflow: hidden;
 }
 
-/* Scroll Wheel */
+/* Scroll Wheel Styles */
 .scroll-wheel {
   position: absolute;
   bottom: 20px;
@@ -201,6 +206,7 @@ body {
   mix-blend-mode: difference;
   background-color: transparent;
 }
+
 .wheel-text {
   position: absolute;
   width: 110%;
@@ -225,6 +231,7 @@ body {
   mix-blend-mode: difference;
 }
 
+/* Keyframes for Scroll Wheel Animation */
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -234,7 +241,7 @@ body {
   }
 }
 
-/* Shops Section */
+/* Shops Section Styles */
 .shops-section {
   padding: 60px 0;
   max-width: 1200px;
@@ -266,6 +273,7 @@ body {
   color: #333;
 }
 
+/* Category Navigation Styles */
 .category-nav {
   margin-bottom: 40px;
 }
@@ -310,7 +318,7 @@ body {
   background-color: var(--brand-blue);
 }
 
-/* Shop Carousel */
+/* Shop Carousel Styles */
 .shop-carousel {
   max-width: 1000px;
   margin: 0 auto;
@@ -397,7 +405,7 @@ body {
   color: white;
   text-decoration: none;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .visit-btn:hover {
@@ -442,14 +450,14 @@ body {
   border-radius: 50%;
   background-color: #ccc;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .dot.active {
   background-color: var(--brand-blue);
 }
 
-/* Footer */
+/* Footer Styles */
 .footer {
   background-color: var(--brand-blue);
   color: white;
@@ -494,6 +502,7 @@ body {
   animation: slideInFromRight 2s forwards;
 }
 
+/* Keyframes for Footer Animation */
 @keyframes slideInFromLeft {
   to {
     transform: translateX(0);
@@ -550,6 +559,7 @@ body {
   text-decoration: none;
 }
 
+/* Back to Top Button Styles */
 .back-to-top {
   position: relative;
   width: 120px;
@@ -565,6 +575,7 @@ body {
   width: 100%;
   height: 100%;
 }
+
 .top-wheel text {
   font-family: Inter, sans-serif;
   font-size: 16px;
@@ -582,6 +593,7 @@ body {
   z-index: 2;
 }
 
+/* Keyframes for Spin Animation */
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -591,7 +603,7 @@ body {
   }
 }
 
-/* Responsive adjustments */
+/* Responsive Adjustments */
 @media (max-width: 992px) {
   .footer-content {
     flex-direction: column;
@@ -603,17 +615,18 @@ body {
   .back-to-top {
     margin-top: 20px;
   }
+
   /* Adjust carousel container */
   .carousel-container {
     min-height: auto;
     height: auto;
     overflow: visible;
-    margin-bottom: 70px; /* Provide space for dots below */
+    margin-bottom: 70px;
   }
 
-  /* Fix carousel slide layout */
+  /* Carousel slide layout */
   .carousel-slide {
-    position: relative; /* Change from absolute to relative */
+    position: relative;
     flex-direction: column;
     height: auto !important;
     min-height: 0;
@@ -627,7 +640,7 @@ body {
     transform: translateX(0) !important;
   }
 
-  /* Ensure shop content has proper spacing */
+  /* Proper spacing for the shop content */
   .shop-content {
     width: 100%;
     padding-right: 0;
@@ -635,7 +648,7 @@ body {
     z-index: 5;
   }
 
-  /* Properly position the carousel dots */
+  /* Positioning the carousel dots */
   .carousel-dots {
     position: relative;
     bottom: auto;
@@ -645,7 +658,6 @@ body {
     clear: both;
   }
 
-  /* Make shop images responsive */
   .shop-images {
     width: 100%;
   }
@@ -667,13 +679,12 @@ body {
     width: 100%;
   }
 
-  /* Fix z-index issues */
   .dot {
     position: relative;
     z-index: 10;
   }
 
-  /* Prevent nested scrolling */
+  /* Fix for the nested scrolling */
   .shops-section {
     overflow: visible;
   }
@@ -685,6 +696,7 @@ body {
   }
 }
 
+/* Some more responsiveness */
 @media (max-width: 768px) {
   .header {
     height: auto;
@@ -715,6 +727,7 @@ body {
   .footer-line-bottom {
     width: 85%;
   }
+
   .carousel-container {
     margin-bottom: 50px;
   }
@@ -733,7 +746,7 @@ body {
   }
 }
 
-/* Hamburger Menu */
+/* Hamburger Menu Styles */
 .hamburger {
   display: none;
 }
@@ -743,6 +756,7 @@ body {
   display: flex;
 }
 
+/* Keyframes for Hamburger Menu Animation */
 @keyframes slideDown {
   0% {
     transform: translateY(-10%);
@@ -754,7 +768,7 @@ body {
   }
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for mobile screens */
 @media (max-width: 600px) {
   .hamburger {
     display: block;
@@ -840,7 +854,7 @@ body {
 
   #loginDropdown {
     position: absolute;
-    top: 70px; /* Position below logo */
+    top: 70px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 20;
@@ -864,7 +878,7 @@ body {
   }
 }
 
-/* Enhanced cursor styles */
+/* Cursor circle style */
 .cursor-circle {
   position: fixed;
   width: 20px;
@@ -903,7 +917,7 @@ body {
   transition: opacity 0.3s;
 }
 
-/* Dropdown content styles */
+/* Dropdown content style */
 .dropdown-content {
   position: absolute;
   top: 100%;
@@ -944,7 +958,7 @@ body {
   display: block;
 }
 
-/* Logout button styles - same as login button */
+/* Logout button style - same as login button */
 #logoutButton {
   background: none;
   border: none;
@@ -956,7 +970,7 @@ body {
   transition: opacity 0.3s;
 }
 
-/* Admin Controls Styling */
+/* Admin controls styling */
 .admin-panel {
   display: flex;
   flex-direction: column;
@@ -969,7 +983,7 @@ body {
   max-width: 600px;
 }
 
-/* New Store Form Titles */
+/* New store form titles */
 .admin-panel h4 {
   color: var(--white);
   margin-bottom: 15px;
@@ -979,7 +993,7 @@ body {
   color: var(--white);
 }
 
-/* Existing styles */
+/* Style for admin form */
 .admin-form {
   width: 100%;
   display: flex;
@@ -1017,7 +1031,7 @@ body {
   background-color: rgba(255, 255, 255, 0.8); /* Lighter shade on hover */
 }
 
-/* Additional styles for select elements */
+/* Additional style for select elements */
 .admin-form select {
   appearance: none;
   background: var(--white);
@@ -1027,7 +1041,7 @@ body {
   background-size: 10px;
 }
 
-/* Admin Edit/Delete Button Styles */
+/* Admin Edit/Delete button style */
 .store-admin-controls {
   display: flex;
   gap: 10px;
@@ -1058,7 +1072,7 @@ body {
   background-color: #c9302c;
 }
 
-/* Edit form styles */
+/* Edit form style */
 .edit-store-form {
   margin-top: 15px;
   padding: 12px;
@@ -1083,7 +1097,7 @@ body {
 }
 
 .form-field:first-of-type {
-  grid-column: span 2; /* Store ID spans both columns */
+  grid-column: span 2;
 }
 
 .form-field label {
@@ -1107,7 +1121,7 @@ body {
   display: flex;
   gap: 8px;
   margin-top: 10px;
-  grid-column: span 2; /* Actions span both columns */
+  grid-column: span 2;
 }
 
 .form-actions button {
@@ -1120,6 +1134,7 @@ body {
   transition: background-color 0.3s;
   font-size: 0.9rem;
 }
+
 .form-actions button[type="submit"] {
   background-color: var(--brand-blue);
   color: white;

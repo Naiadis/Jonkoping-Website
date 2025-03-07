@@ -12,14 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   });
+
   // Cursor circle functionality
   const cursorCircle = document.querySelector(".cursor-circle");
 
-  // Define all clickable elements
+  // Define all clickable elements for cursor hover effect
   const clickableElements =
-    'a, button, .visit-btn,.scroll-wheel, .back-to-top, .language-btn, .hamburger, input[type="submit"]';
+    'a, button, .visit-btn, .scroll-wheel, .back-to-top, .language-btn, .hamburger, input[type="submit"]';
 
-  // Add hover effect
+  // Add hover effect to clickable elements
   document.querySelectorAll(clickableElements).forEach((element) => {
     element.addEventListener("mouseenter", () => {
       cursorCircle.classList.add("cursor-hover");
@@ -30,13 +31,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Ensure cursor follows mouse
+  // Ensure cursor follows mouse movement
   document.addEventListener("mousemove", (e) => {
     cursorCircle.style.left = `${e.clientX}px`;
     cursorCircle.style.top = `${e.clientY}px`;
   });
 
-  // Back to top button
+  // Back to top button functionality
   const backToTop = document.querySelector(".back-to-top");
   backToTop.addEventListener("click", function () {
     window.scrollTo({
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Rotate the wheel text
+  // Rotate the wheel text continuously
   function rotateWheelText() {
     scrollWheel.querySelector("svg").style.transform = `rotate(${
       (Date.now() / 50) % 360
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   rotateWheelText();
 
-  // Shop categories
+  // Shop categories functionality
   const categoryLinks = document.querySelectorAll(".category-nav a");
   categoryLinks.forEach((link) => {
     link.addEventListener("click", function (e) {
@@ -67,56 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
       this.classList.add("active");
     });
   });
-
-  // // Carousel functionality
-  // const slides = document.querySelectorAll(".carousel-slide");
-  // const dots = document.querySelectorAll(".dot");
-  // const prevBtn = document.querySelector(".prev-btn");
-  // const nextBtn = document.querySelector(".next-btn");
-  // let currentSlide = 0;
-
-  // function showSlide(index) {
-  //   // Remove all classes
-  //   slides.forEach((slide) => {
-  //     slide.classList.remove("active", "prev");
-  //   });
-
-  //   dots.forEach((dot) => {
-  //     dot.classList.remove("active");
-  //   });
-
-  //   // Add active class to current slide
-  //   slides[index].classList.add("active");
-  //   dots[index].classList.add("active");
-
-  //   // Add prev class to previous slide for animation
-  //   const prevIndex = (index - 1 + slides.length) % slides.length;
-  //   slides[prevIndex].classList.add("prev");
-
-  //   currentSlide = index;
-  // }
-
-  // // Initialize first slide
-  // showSlide(0);
-
-  // // Next button
-  // nextBtn.addEventListener("click", function () {
-  //   const nextSlide = (currentSlide + 1) % slides.length;
-  //   showSlide(nextSlide);
-  // });
-
-  // // Previous button
-  // prevBtn.addEventListener("click", function () {
-  //   const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
-  //   showSlide(prevSlide);
-  // });
-
-  // // Dot navigation
-  // dots.forEach((dot, index) => {
-  //   dot.addEventListener("click", function () {
-  //     showSlide(index);
-  //   });
-  // });
 
   // Animate sections on scroll
   function animateSections() {
@@ -147,25 +98,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Event listeners
+  // Event listeners for scroll animations
   window.addEventListener("scroll", () => {
     animateSections();
   });
 
-  // Initial calls
+  // Initial calls to animate sections
   animateSections();
 
+  // Animation loop for continuous effects
   function animate() {
     requestAnimationFrame(animate);
   }
   animate();
 
-  // Update on scroll with throttling
+  // Scroll event handling
   let ticking = false;
   window.addEventListener("scroll", () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        // updateTextColor();
         ticking = false;
       });
       ticking = true;
@@ -175,10 +126,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Add scroll listener for sections
   window.addEventListener("scroll", animateSections);
 
+  // Header visibility toggle on scroll
   let lastScrollPosition = 0;
   let isScrollingDown = false;
   const header = document.querySelector(".header");
-  // const scrollThreshold = 50; // numărul de pixeli după care header-ul se ascunde
 
   function handleScroll() {
     const currentScrollPosition = window.pageYOffset;
@@ -210,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const mainNav = document.querySelector(".main-nav");
 
   hamburger.addEventListener("click", () => {
-    mainNav.classList.toggle("active"); // Toggle the menu
+    mainNav.classList.toggle("active"); // Toggle the menu visibility
   });
 
   // Login dropdown functionality
