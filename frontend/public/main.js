@@ -1,22 +1,12 @@
-async function fetchStores() {
-	try {
-		const response = await fetch("/api/stores");
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		const stores = await response.json();
+import { checkLoginStatus, handleLogin, handleLogout } from "./auth.js";
+import {
+	fetchStores,
+	updateStore,
+	deleteStore,
+	addNewStore,
+} from "./storeOperations.js";
 
-		// Sort stores alphabetically by name
-		stores.sort((a, b) => a.name.localeCompare(b.name));
-
-		console.log("Stores (sorted):", stores);
-		return stores;
-	} catch (error) {
-		console.error("Error fetching stores:", error);
-		return [];
-	}
-}
-
+// Load same slide as before when switching categories
 function saveCurrentSlideIndex(categoryId, index) {
 	localStorage.setItem(`currentSlide_${categoryId}`, index);
 }
@@ -34,7 +24,7 @@ function isAdmin() {
 function createCarouselSlide(store) {
 	const slide = document.createElement("div");
 	slide.classList.add("carousel-slide");
-	slide.dataset.storeId = store.id; // Set store ID as data attribute
+	slide.dataset.storeId = store.id;
 
 	const shopContent = document.createElement("div");
 	shopContent.classList.add("shop-content");
@@ -43,7 +33,7 @@ function createCarouselSlide(store) {
 	shopName.textContent = store.name;
 	shopContent.appendChild(shopName);
 
-	// Add ID display for debugging purposes
+	// Add ID display while admin for debugging purposes
 	if (isAdmin()) {
 		const shopId = document.createElement("div");
 		shopId.classList.add("shop-id");
@@ -89,7 +79,36 @@ function createCarouselSlide(store) {
 		const deleteButton = document.createElement("button");
 		deleteButton.textContent = "Delete";
 		deleteButton.classList.add("delete-store-btn");
-		deleteButton.addEventListener("click", () => deleteStore(store.id));
+		deleteButton.addEventListener("click", async () => {
+			if (!confirm("Are you sure you want to delete this store?")) {
+				return;
+			}
+
+			const result = await deleteStore(store.id);
+			if (result.ok) {
+				alert("Store deleted successfully");
+				updateCarouselWithCategory(
+					document.querySelector(".category-nav a.active").getAttribute("href")
+				);
+			} else {
+				const errorMsg =
+					result.error ||
+					(result.status === 404
+						? "Store not found"
+						: "Failed to delete store");
+				alert(`Error: ${errorMsg}`);
+				console.error("Failed to delete store:", result);
+
+				// Refresh the view if the store doesn't exist
+				if (result.status === 404) {
+					updateCarouselWithCategory(
+						document
+							.querySelector(".category-nav a.active")
+							.getAttribute("href")
+					);
+				}
+			}
+		});
 
 		adminButtons.appendChild(editButton);
 		adminButtons.appendChild(deleteButton);
@@ -122,7 +141,7 @@ function createCarouselSlide(store) {
 	return slide;
 }
 
-function toggleEditForm(store, slideElement) {
+async function toggleEditForm(store, slideElement) {
 	// Check if form already exists
 	const existingForm = slideElement.querySelector(".edit-store-form");
 
@@ -225,7 +244,18 @@ function toggleEditForm(store, slideElement) {
 		};
 
 		console.log("Submitting update for store:", updatedStore);
-		await updateStore(updatedStore);
+		const result = await updateStore(updatedStore);
+
+		if (result.ok) {
+			alert("Store updated successfully");
+			editForm.remove();
+			// Refresh the carousel with current category
+			updateCarouselWithCategory(
+				document.querySelector(".category-nav a.active").getAttribute("href")
+			);
+		} else {
+			alert(`Error updating store: ${result.error || "Unknown error"}`);
+		}
 	});
 
 	// Add cancel handler
@@ -235,108 +265,6 @@ function toggleEditForm(store, slideElement) {
 
 	// Insert form after store content
 	slideElement.querySelector(".shop-content").appendChild(editForm);
-}
-
-async function updateStore(store) {
-	try {
-		// Store the current category for refreshing the same view later
-		const currentCategoryId = document
-			.querySelector(".category-nav a.active")
-			.getAttribute("href");
-
-		console.log(`Sending update request for store ID: ${store.id}`);
-
-		const response = await fetch(`/api/admin/stores/${store.id}`, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(store),
-			credentials: "include",
-		});
-
-		// Check for authentication errors
-		if (response.status === 401 || response.status === 403) {
-			alert("Your session has expired. Please log in again.");
-			await checkLoginStatus(); // Refresh login status
-			return;
-		}
-
-		const responseText = await response.text();
-		console.log(
-			`Server response status: ${response.status}, text: ${responseText}`
-		);
-
-		let responseData;
-		try {
-			responseData = JSON.parse(responseText);
-		} catch (e) {
-			responseData = { message: responseText };
-		}
-
-		if (response.ok) {
-			alert("Store updated successfully");
-			// Refresh the same category view
-			updateCarouselWithCategory(currentCategoryId);
-		} else {
-			const errorMessage =
-				responseData.error || responseData.message || "Failed to update store";
-			alert(`Error: ${errorMessage}`);
-			console.error("Failed to update store:", responseData);
-		}
-	} catch (error) {
-		console.error("Update store error:", error);
-		alert(`Network error: ${error.message}`);
-	}
-}
-
-async function deleteStore(storeId) {
-	if (!confirm("Are you sure you want to delete this store?")) {
-		return;
-	}
-
-	try {
-		console.log(`Sending delete request for store ID: ${storeId}`);
-		const response = await fetch(`/api/admin/stores/${storeId}`, {
-			method: "DELETE",
-			credentials: "include",
-		});
-
-		// Check for authentication errors
-		if (response.status === 401 || response.status === 403) {
-			alert("Your session has expired. Please log in again.");
-			await checkLoginStatus(); // Refresh login status
-			return;
-		}
-
-		const responseText = await response.text();
-		console.log(
-			`Server response status: ${response.status}, text: ${responseText}`
-		);
-
-		let responseData;
-		try {
-			responseData = JSON.parse(responseText);
-		} catch (e) {
-			responseData = { message: responseText };
-		}
-
-		if (response.ok) {
-			alert("Store deleted successfully");
-			// Refresh the current view
-			updateCarouselWithCategory(
-				document.querySelector(".category-nav a.active").getAttribute("href")
-			);
-		} else {
-			const errorMessage =
-				responseData.error || responseData.message || "Failed to delete store";
-			alert(`Error: ${errorMessage}`);
-			console.error("Failed to delete store:", responseData);
-		}
-	} catch (error) {
-		console.error("Delete store error:", error);
-		alert(`Network error: ${error.message}`);
-	}
 }
 
 function initializeCarousel(slides, categoryId) {
@@ -352,7 +280,7 @@ function initializeCarousel(slides, categoryId) {
 		carouselContainer.appendChild(slide);
 	});
 
-	// Create dots based on number of slides (up to 5)
+	// Create dots based on number of slides (only 5 dots max)
 	const dotsToShow = Math.min(slides.length, 5);
 	for (let i = 0; i < dotsToShow; i++) {
 		const dot = document.createElement("span");
@@ -431,88 +359,7 @@ function initializeCarouselNavigation(categoryId) {
 	}
 }
 
-async function addNewStore(store) {
-	try {
-		// Store the current category for refreshing the same view later
-		const currentCategoryId = document
-			.querySelector(".category-nav a.active")
-			.getAttribute("href");
-
-		console.log("Sending add store request:", store);
-
-		const response = await fetch("/api/admin/stores", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(store),
-			credentials: "include",
-		});
-
-		// Log full response details for debugging
-		console.log("Add store response status:", response.status);
-		console.log(
-			"Add store response headers:",
-			Object.fromEntries(response.headers.entries())
-		);
-
-		// Check for specific error statuses
-		if (response.status === 401 || response.status === 403) {
-			alert("Authentication required. Please log in again.");
-			await checkLoginStatus(); // Refresh login status
-			return;
-		}
-
-		if (!response.ok) {
-			const errorText = await response.text();
-			console.error("Add store error response:", errorText);
-			alert(`Error adding store: ${response.status} ${response.statusText}`);
-			return;
-		}
-
-		const responseData = await response.json();
-		alert("Store added successfully");
-
-		// Clear form
-		document.getElementById("newStoreName").value = "";
-		document.getElementById("newStoreUrl").value = "";
-		document.getElementById("newStoreDistrict").value = "";
-		document.getElementById("newStoreCategory").value = "";
-
-		// Refresh the same category view
-		updateCarouselWithCategory(currentCategoryId);
-	} catch (error) {
-		console.error("Add store error:", error);
-		alert(`Network error: ${error.message}`);
-	}
-}
-
-async function checkLoginStatus() {
-	try {
-		const response = await fetch("/api/check-auth", {
-			credentials: "include",
-		});
-
-		if (response.ok) {
-			const data = await response.json();
-			if (data.authenticated && data.role === "admin") {
-				// Show admin controls
-				document.getElementById("adminControls").style.display = "block";
-				document.getElementById("logoutButton").style.display = "block";
-				document.getElementById("loginDropdown").style.display = "none";
-
-				// Refresh store display to add admin buttons
-				updateCarouselWithCategory("#clothing");
-				return true;
-			}
-		}
-		return false;
-	} catch (error) {
-		console.error("Error checking auth status:", error);
-		return false;
-	}
-}
-
+// Sort stores by category and update carousel
 async function updateCarouselWithCategory(categoryId) {
 	try {
 		const stores = await fetchStores();
@@ -541,12 +388,11 @@ function getStoresByCategory(stores, categoryId) {
 	return stores.filter((store) => store.category === targetCategory);
 }
 
-// Document ready function
+// Initialize the page
 document.addEventListener("DOMContentLoaded", async () => {
-	// Check login status
 	const isLoggedIn = await checkLoginStatus();
 
-	// Initialize categories and first category view
+	// Initialize category navigation
 	const categoryLinks = document.querySelectorAll(".category-nav a");
 	categoryLinks.forEach((link) => {
 		link.addEventListener("click", (e) => {
@@ -564,40 +410,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const username = document.getElementById("username").value;
 		const password = document.getElementById("password").value;
 
-		try {
-			const response = await fetch("/api/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ username, password }),
-				credentials: "include",
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				if (data.user.role === "admin") {
-					document.getElementById("adminControls").style.display = "block";
-					document.getElementById("loginDropdown").style.display = "none";
-					document.getElementById("logoutButton").style.display = "block";
-
-					// Refresh the current view to add admin buttons
-					updateCarouselWithCategory(
-						document
-							.querySelector(".category-nav a.active")
-							.getAttribute("href")
-					);
-
-					alert("Admin login successful!");
-				} else {
-					alert("Welcome! You are logged in as a regular user.");
-				}
-			} else {
-				alert("Login failed. Please check your credentials.");
-			}
-		} catch (error) {
-			console.error("Login error:", error);
-			alert("Login error. Please try again later.");
+		const data = await handleLogin(username, password);
+		if (data && data.user.role === "admin") {
+			document.getElementById("adminControls").style.display = "block";
+			document.getElementById("loginDropdown").style.display = "none";
+			document.getElementById("logoutButton").style.display = "block";
+			updateCarouselWithCategory(
+				document.querySelector(".category-nav a.active").getAttribute("href")
+			);
+			alert("Admin login successful!");
+		} else if (data) {
+			alert("Welcome! You are logged in as a regular user.");
+		} else {
+			alert("Login failed. Please check your credentials.");
 		}
 	});
 
@@ -605,31 +430,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 	document
 		.getElementById("logoutButton")
 		?.addEventListener("click", async () => {
-			try {
-				const response = await fetch("/api/logout", {
-					method: "POST",
-					credentials: "include",
-				});
-
-				if (response.ok) {
-					document.getElementById("adminControls").style.display = "none";
-					document.getElementById("loginDropdown").style.display = "block";
-					document.getElementById("logoutButton").style.display = "none";
-
-					// Refresh the current view to remove admin buttons
-					updateCarouselWithCategory(
-						document
-							.querySelector(".category-nav a.active")
-							.getAttribute("href")
-					);
-
-					alert("Logged out successfully!");
-				} else {
-					alert("Logout failed. Please try again.");
-				}
-			} catch (error) {
-				console.error("Logout error:", error);
-				alert("Logout error. Please try again later.");
+			if (await handleLogout()) {
+				document.getElementById("adminControls").style.display = "none";
+				document.getElementById("loginDropdown").style.display = "block";
+				document.getElementById("logoutButton").style.display = "none";
+				updateCarouselWithCategory(
+					document.querySelector(".category-nav a.active").getAttribute("href")
+				);
+				alert("Logged out successfully!");
+			} else {
+				alert("Logout failed. Please try again.");
 			}
 		});
 
@@ -638,7 +448,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 		.getElementById("addStoreForm")
 		?.addEventListener("submit", async (e) => {
 			e.preventDefault();
-
 			const newStore = {
 				name: document.getElementById("newStoreName").value,
 				url: document.getElementById("newStoreUrl").value,
@@ -646,10 +455,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 				category: document.getElementById("newStoreCategory").value,
 			};
 
-			await addNewStore(newStore);
+			const result = await addNewStore(newStore);
+			if (result.ok) {
+				alert("Store added successfully");
+				document.getElementById("newStoreName").value = "";
+				document.getElementById("newStoreUrl").value = "";
+				document.getElementById("newStoreDistrict").value = "";
+				document.getElementById("newStoreCategory").value = "";
+				updateCarouselWithCategory(
+					document.querySelector(".category-nav a.active").getAttribute("href")
+				);
+			} else {
+				alert(`Error adding store: ${result.error || "Unknown error"}`);
+			}
 		});
 
-	// If not already logged in, load initial category
+	// Load initial category if not logged in
 	if (!isLoggedIn) {
 		updateCarouselWithCategory("#clothing");
 	}

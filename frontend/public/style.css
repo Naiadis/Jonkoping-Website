@@ -958,6 +958,27 @@ body {
   display: block;
 }
 
+/* Form field styling to solve node violations */
+.dropdown-content .form-field {
+	margin-bottom: 10px;
+}
+
+.dropdown-content .form-field label {
+	display: block;
+	color: white;
+	font-size: 0.8rem;
+	margin-bottom: 4px;
+}
+
+.dropdown-content .form-field input {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid var(--light-blue);
+	border-radius: 4px;
+	font-size: 0.9rem;
+	background: rgba(255, 255, 255, 0.9);
+}
+
 /* Logout button style - same as login button */
 #logoutButton {
   background: none;
